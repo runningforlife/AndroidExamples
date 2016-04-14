@@ -1,4 +1,4 @@
-package com.samsung.jason.booklist;
+package com.xxxx.jason.booklist;
 
 import java.util.Date;
 import java.text.DateFormat;
