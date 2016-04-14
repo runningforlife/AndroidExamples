@@ -1,4 +1,4 @@
-package com.samsung.jason.booklist;
+package com.xxxx.jason.booklist;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
