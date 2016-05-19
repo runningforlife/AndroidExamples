@@ -1,3 +1,7 @@
 # CodeTemplates
 
-This is for saving some practical code fragments.
+This is for Android application examples.
+
+# Todo
+
+1. Animation
