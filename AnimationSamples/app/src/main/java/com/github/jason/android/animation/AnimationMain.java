@@ -1,4 +1,4 @@
-package com.github.jason.android.animationsamples;
+package com.github.jason.android.animation;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class AnimationMain extends AppCompatActivity {
     public static final String TAG = AnimationMain.class.getSimpleName();

@@ -1,11 +1,6 @@
-package com.github.jason.android.animationsamples;
+package com.github.jason.android.animation;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;

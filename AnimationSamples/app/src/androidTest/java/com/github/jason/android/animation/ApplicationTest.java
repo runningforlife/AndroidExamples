@@ -1,4 +1,4 @@
-package com.github.jason.android.animationsamples;
+package com.github.jason.android.animation;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

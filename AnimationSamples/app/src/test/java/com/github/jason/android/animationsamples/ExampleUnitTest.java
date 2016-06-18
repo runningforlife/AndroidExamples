@@ -1,4 +1,4 @@
-package com.github.jason.android.animationsamples;
+package com.github.jason.android.animation;
 
 import org.junit.Test;
 
