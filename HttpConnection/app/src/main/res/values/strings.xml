@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HttpConnection</string>
+    <string name="action_settings">Settings</string>
+    <string name="download_html">Download HTML</string>
+    <string name="download_images">Download Images</string>
+    <string name="input_url">Please input an URL or Use default</string>
+    <string name="download_hint">downloading...please wait for a while</string>
+</resources>
