@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">WebDataRetrieve</string>
     <string name="action_settings">Settings</string>
+
+    <string name="get_product_info">Get Product Information</string>
+    <string name="please_input_a_bar_code">Please input a barcode</string>
+
+    <string name="product_ref_price">参考价格</string>
+    <string name="product_country">商品国家</string>
+    <string name="product_producer">厂商名称</string>
+    <string name="product_producer_code">厂商代码</string>
 </resources>
