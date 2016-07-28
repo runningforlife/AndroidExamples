@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
                     HtmlParser parser = HtmlParser.getInstance();
                     parser.setHtml(mHtmlStr);
-                    parser.parse();
+                    parser.parse(false);
                     break;
             }
         }

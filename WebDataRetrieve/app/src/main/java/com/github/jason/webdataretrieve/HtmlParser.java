@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class HtmlParser {
 
     private String mHtml;
     private List<String> mHtmlData;
+    private boolean mUnitTestMode = false;
 
     private static HtmlParser sInstance;
 
@@ -44,8 +46,14 @@ public class HtmlParser {
         mHtmlData = new ArrayList<>();
     }
 
-    public List<String> parse(){
-        assert(mHtml != null);
+    public List<String> parse(boolean unitTestMode){
+        mUnitTestMode = unitTestMode;
+        if(mHtml == null){
+            if(!unitTestMode) {
+                Log.v(TAG, "a html string should not be empty or null");
+            }
+            return null;
+        }
         readHtmlData();
 
         return mHtmlData;
@@ -59,14 +67,17 @@ public class HtmlParser {
 
         Element link = doc.select("dt").first().getElementsByTag("img").first();
         mHtmlData.add(link.attr("src"));
-        Log.v(TAG, "img url = " + link.attr("src"));
+        if(!mUnitTestMode){
+            Log.v(TAG, "img url = " + link.attr("src"));
+        }
 
 
         Elements infos = doc.select("dd");
         for(Element info: infos){
-            String[] infoString = new String[2];
-            infoString = info.text().split(":");
-            Log.v(TAG,"info = " + infoString[1]);
+            String[] infoString = info.text().split("：",2);
+            if(!mUnitTestMode){
+                Log.v(TAG, "info = " + infoString[1]);
+            }
 
             mHtmlData.add(infoString[1]);
         }
