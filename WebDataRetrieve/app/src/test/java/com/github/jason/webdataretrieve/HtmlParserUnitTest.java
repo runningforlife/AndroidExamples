@@ -1,5 +1,7 @@
 package com.github.jason.webdataretrieve;
 
+import com.github.jason.webdataretrieve.parser.HtmlParser;
+
 import org.junit.Test;
 
 import java.util.ArrayList;

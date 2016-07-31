@@ -1,4 +1,4 @@
-package com.github.jason.webdataretrieve;
+package com.github.jason.webdataretrieve.parser;
 
 import android.util.Log;
 
@@ -6,9 +6,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mockito.Mock;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -63,8 +63,6 @@ public class HtmlParser {
         //assert(mHtml==null);
         Document doc = Jsoup.parse(mHtml);
 
-
-
         Element link = doc.select("dt").first().getElementsByTag("img").first();
         mHtmlData.add(link.attr("src"));
         if(!mUnitTestMode){
@@ -74,12 +72,12 @@ public class HtmlParser {
 
         Elements infos = doc.select("dd");
         for(Element info: infos){
-            String[] infoString = info.text().split("：",2);
+            //String[] infoString = info.text().split("：",2);
             if(!mUnitTestMode){
-                Log.v(TAG, "info = " + infoString[1]);
+                Log.v(TAG, "info = " + info.text());
             }
 
-            mHtmlData.add(infoString[1]);
+            mHtmlData.add(info.text());
         }
     }
 }

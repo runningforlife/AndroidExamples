@@ -1,5 +1,4 @@
-package com.github.jason.webdataretrieve;
-
+package com.github.jason.webdataretrieve.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,13 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -28,14 +25,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.jason.webdataretrieve.parser.HtmlParser;
+import com.github.jason.webdataretrieve.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+/**
+ * Created by JasonWang on 2016/7/31.
+ */
+public class ProductInformationFragment extends BaseFragment{
+    public static final String TAG = ProductInformationFragment.class.getSimpleName();
+
 
     private static final int MAX_TEXT_SIZE = 20000;
 
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String sProductInfoUrl_2 = "http://www.liantu.com/tiaoma/";
     private static final String sProductInfoGds = "http://search.anccnet.com/searchResult2.aspx?";
     private static final String sDefaultCharset = "UTF-8";
+
+    private Context mContext;
 
     private ConnectivityManager mConnectionMgr;
     private ProgressDialog mProgressDialog;
@@ -61,67 +67,57 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTvProducerCode;
     private TextView mTvProductCountry;
     private TextView mTvProductProducer;
+    private TextView mTvProductCity;
 
     private WebView mWvBarcode;
     private String mSavedUrl;
     private String mHtmlStr;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public ProductInformationFragment(){
+    }
 
-        mConnectionMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static ProductInformationFragment newInstance(String type){
+        ProductInformationFragment fragment = new ProductInformationFragment();
 
-        sHandler = getHandler();
-        initView();
+        Bundle bundle = new Bundle();
+        bundle.putString("type",type);
+        fragment.setArguments(bundle);
 
-        mWvBarcode = (WebView) findViewById(R.id.wv_barcode_checking);
+        return fragment;
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onAttach(Context context){
+        super.onAttach(context);
+        mContext = context;
+        mConnectionMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState){
+        View parent = inflater.inflate(R.layout.fragment_product_information,container,false);
+        initView(parent);
+
+        return parent;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onActivityCreated(Bundle savedState){
+        super.onActivityCreated(savedState);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    private void initView(View parent) {
+        mWvBarcode = (WebView) parent.findViewById(R.id.wv_barcode_checking);
+        mEtBarcode = (EditText)parent.findViewById(R.id.et_bar_code);
+        mBtnGetProductInfo = (Button) parent.findViewById(R.id.btn_http_post);
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void initView() {
-        mEtBarcode = (EditText) findViewById(R.id.et_bar_code);
-        mBtnGetProductInfo = (Button) findViewById(R.id.btn_http_post);
-
-        mIvProductName = (ImageView)findViewById(R.id.product_name);
-        mTvProductRefPrice = (TextView)findViewById(R.id.ref_price);
-        mTvProducerCode = (TextView)findViewById(R.id.producer);
-        mTvProductCountry = (TextView)findViewById(R.id.country);
-        mTvProductProducer = (TextView)findViewById(R.id.producer);
+        mIvProductName = (ImageView)parent.findViewById(R.id.product_name);
+        mTvProductRefPrice = (TextView)parent.findViewById(R.id.tv_ref_price);
+        mTvProducerCode = (TextView)parent.findViewById(R.id.tv_producer);
+        mTvProductCountry = (TextView)parent.findViewById(R.id.tv_country);
+        mTvProductProducer = (TextView)parent.findViewById(R.id.tv_producer);
+        mTvProductCity = (TextView)parent.findViewById(R.id.tv_city);
 
         mBtnGetProductInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,23 +129,20 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     getProductInfo(barCode);
-                    //getProductInfoByJaunt(barCode);
-
                 } else {
                     showHint("wrong barcode format;\\n barcode length should be 8 or 13");
                 }
             }
         });
-
-
     }
 
     private void showHint(String hint) {
-        Toast.makeText(this, hint, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, hint, Toast.LENGTH_LONG).show();
     }
 
     private void getProductInfo(String barCode) {
-        mProgressDialog = ProgressDialog.show(this,"","get the product information...please wait");
+        mProgressDialog = ProgressDialog.show(mContext,"",
+                "get the product information...please wait");
         getProductInfoByJS(barCode);
     }
 
@@ -200,39 +193,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class EventHandler extends Handler {
-
-        public EventHandler() {
-            super(Looper.getMainLooper());
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Log.v(TAG, "handleMessage(): what = " + msg.what);
-            switch (msg.what) {
-                case EVENT_GET_INFO_START:
-                    Log.v(TAG, "get info is started");
-                    break;
-                case EVENT_GET_INFO_DONE:
-                    Log.v(TAG, "get info is done");
-                    mProgressDialog.dismiss();
-
-                    HtmlParser parser = HtmlParser.getInstance();
-                    parser.setHtml(mHtmlStr);
-                    parser.parse(false);
-                    break;
-            }
-        }
-    }
-
-    private EventHandler getHandler() {
-        if (sHandler == null) {
-            sHandler = new EventHandler();
-        }
-
-        return sHandler;
-    }
-
     private boolean isNetworkConnected() {
         NetworkInfo netInfo = mConnectionMgr.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
@@ -253,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         settings.setDisplayZoomControls(true);
         settings.setDomStorageEnabled(true);
-        mWvBarcode.addJavascriptInterface(new MyJavascriptInterface(this), "HtmlViewer");
+        mWvBarcode.addJavascriptInterface(new MyJavascriptInterface(mContext), "HtmlViewer");
 
         mWvBarcode.setWebViewClient(new WebViewClient() {
             @Override
@@ -293,12 +253,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
-        public void showHtml(String html) {
-            Log.v(TAG, "showHtml(): " + html);
-            mHtmlStr = new String(html);
-        }
-
-        @JavascriptInterface
         public void showProductInfo(String info) {
             Log.v(TAG, "showProductInfo(): info = " + info);
             mHtmlStr = new String(info);
@@ -309,10 +263,53 @@ public class MainActivity extends AppCompatActivity {
         if(!infos.isEmpty()){
             downloadImage(infos.get(0));
 
-            mTvProductRefPrice.setText(infos.get(1));
-            mTvProducerCode.setText(infos.get(2));
-            mTvProductCountry.setText(infos.get(3));
-            mTvProductProducer.setText(infos.get(4));
+            for(int index = 1; index < infos.size(); ++index){
+                switch (index){
+                    case 1:
+                        mTvProductRefPrice.setText(infos.get(1));
+                        break;
+                    case 2:
+                        mTvProducerCode.setText(infos.get(2));
+                        break;
+                    case 3:
+                        mTvProductCountry.setText(infos.get(3));
+                        break;
+                    case 4:
+                        mTvProductProducer.setText(infos.get(4));
+                        break;
+                    case 5:
+                        mTvProductCity.setText(infos.get(5));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+
+    private class EventHandler extends Handler {
+
+        public EventHandler() {
+            super(Looper.getMainLooper());
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Log.v(TAG, "handleMessage(): what = " + msg.what);
+            switch (msg.what) {
+                case EVENT_GET_INFO_START:
+                    Log.v(TAG, "get info is started");
+                    break;
+                case EVENT_GET_INFO_DONE:
+                    Log.v(TAG, "get info is done");
+                    mProgressDialog.dismiss();
+
+                    HtmlParser parser = HtmlParser.getInstance();
+                    parser.setHtml(mHtmlStr);
+                    setViewText(parser.parse(false));
+                    break;
+            }
         }
     }
 }
