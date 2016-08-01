@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import com.github.jason.webdataretrieve.R;
 import com.github.jason.webdataretrieve.ui.fragment.BaseFragment;
+import com.github.jason.webdataretrieve.ui.fragment.EmployeeFragment;
 import com.github.jason.webdataretrieve.ui.fragment.ProductInformationFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -72,11 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -112,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fragment = ProductInformationFragment.newInstance(type);
             fragmentMgr.beginTransaction()
                        .replace(R.id.view_container, fragment,ProductInformationFragment.TAG)
+                       .commit();
+            mCurrentFragmentType = type;
+        }else if(type.equals("XML") && !type.equals(mCurrentFragmentType)){
+            fragment = EmployeeFragment.newInstance(type);
+            fragmentMgr.beginTransaction()
+                       .replace(R.id.view_container,fragment,EmployeeFragment.TAG)
                        .commit();
             mCurrentFragmentType = type;
         }
