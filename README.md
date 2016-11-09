@@ -13,3 +13,5 @@ how to use HttpURLConnection to get data
 ## WebDataRetrieve ##
 
 how to retrieve data from HTML/XML/JSON
+
+## Custom Preference for settings ##
