@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="OverlayThemeRed">
+        <item name="colorPrimary">@color/colorRed</item>
+        <item name="colorPrimaryDark">@color/colorRedDark</item>
+    </style>
+
+    <style name="OverlayThemePink">
+        <item name="colorPrimary">@color/colorPink</item>
+        <item name="colorPrimaryDark">@color/colorPinkDark</item>
+    </style>
+
+    <style name="OverlayThemePurple">
+        <item name="colorPrimary">@color/colorPurple</item>
+        <item name="colorPrimaryDark">@color/colorPurpleDark</item>
+    </style>
+
+    <style name="OverlayThemeDeepPurple">
+        <item name="colorPrimary">@color/colorDeepPurple</item>
+        <item name="colorPrimaryDark">@color/colorDeepPurpleDark</item>
+    </style>
+
+    <style name="OverlayThemeIndigo">
+        <item name="colorPrimary">@color/colorIndigo</item>
+        <item name="colorPrimaryDark">@color/colorIndigoDark</item>
+    </style>
+
+    <style name="OverlayThemeBlue">
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/colorBlueDark</item>
+    </style>
+
+</resources>
