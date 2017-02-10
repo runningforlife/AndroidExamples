@@ -9,23 +9,18 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.jason.customview.view.CircleTextView;
+
 public class MainActivity extends AppCompatActivity {
+
+    private CircleTextView mCtv1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        mCtv1 = (CircleTextView)findViewById(R.id.ctv_1);
     }
 
     @Override
