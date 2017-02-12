@@ -1,4 +1,4 @@
-package com.github.jason.android.animation;
+package com.github.jason.android;
 
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -12,11 +12,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.jason.android.layout.LayoutAnimationActivity;
+import com.github.jason.android.view.FullImageActivity;
+import com.github.jason.android.view.LargeImageDecodeUtil;
+import com.github.jason.android.view.R;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AnimationMainFragment extends Fragment implements View.OnClickListener{
-    public static final String TAG = "AnimationMainFragment";
+public class AnimationFragment extends Fragment implements View.OnClickListener{
+    public static final String TAG = "AnimationFragment";
 
     private TextView mTvImageTitle = null;
     private ImageView mIvImageIcon = null;
@@ -25,8 +30,9 @@ public class AnimationMainFragment extends Fragment implements View.OnClickListe
     private Button mBtnFromTop = null;
     private Button mBtnFromBottom = null;
     private Button mBtnFadeIn = null;
+    private Button mBtnLayoutAnim = null;
 
-    public AnimationMainFragment() {
+    public AnimationFragment() {
     }
 
     @Override
@@ -46,12 +52,14 @@ public class AnimationMainFragment extends Fragment implements View.OnClickListe
         mBtnFromTop = (Button)rootView.findViewById(R.id.from_top);
         mBtnFromBottom = (Button)rootView.findViewById(R.id.from_bottom);
         mBtnFadeIn = (Button) rootView.findViewById(R.id.fade_in);
+        mBtnLayoutAnim = (Button)rootView.findViewById(R.id.layout_anim);
 
         mBtnFromLeft.setOnClickListener(this);
         mBtnFromBottom.setOnClickListener(this);
         mBtnFromRight.setOnClickListener(this);
         mBtnFromTop.setOnClickListener(this);
         mBtnFadeIn.setOnClickListener(this);
+        mBtnLayoutAnim.setOnClickListener(this);
 
         return rootView;
     }
@@ -66,29 +74,38 @@ public class AnimationMainFragment extends Fragment implements View.OnClickListe
             case R.id.from_left:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(), R.anim.enter_from_left, R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
                 break;
             case R.id.from_right:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(), R.anim.enter_from_right, R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
                 break;
             case R.id.from_top:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(), R.anim.enter_from_top, R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
                 break;
             case R.id.from_bottom:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(), R.anim.enter_from_bottom, R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
                 break;
             case R.id.fade_in:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(),R.anim.fade_in,R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
+                break;
+            case R.id.layout_anim:
+                Intent i = new Intent(getContext(), LayoutAnimationActivity.class);
+                startActivity(i);
                 break;
             default:
                 optionsCompat = ActivityOptionsCompat.makeCustomAnimation(
                         getContext(), R.anim.fade_in, R.anim.fade_out);
+                startActivity(intent, optionsCompat.toBundle());
                 break;
         }
-        startActivity(intent, optionsCompat.toBundle());
     }
 }
 

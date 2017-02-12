@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/fab_margin"
-    tools:context=".AnimationMainFragment"
+    tools:context="com.github.jason.android.AnimationFragment"
     tools:showIn="@layout/activity_animation_main"
     android:gravity="top|center">
 
@@ -29,35 +29,46 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_below="@id/image_layout"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:layout_centerVertical="true">
+        android:layout_below="@id/image_layout"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_alignParentLeft="true">
 
-        <Button android:id="@+id/from_left"
-            style="@style/CustomButton"
-            android:text="@string/enter_from_left" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:orientation="vertical"
+            android:layout_gravity="left"
+            android:scrollbars="horizontal">
 
-        <Button android:id="@+id/from_right"
-            style="@style/CustomButton"
-            android:text="@string/enter_from_right" />
+            <Button android:id="@+id/from_left"
+                style="@style/CustomButton"
+                android:text="@string/enter_from_left" />
 
-        <Button android:id="@+id/from_top"
-            style="@style/CustomButton"
-            android:text="@string/enter_from_top"/>
+            <Button android:id="@+id/from_right"
+                style="@style/CustomButton"
+                android:text="@string/enter_from_right" />
 
-        <Button android:id="@+id/from_bottom"
-            style="@style/CustomButton"
-            android:text="@string/enter_from_bottom"/>
+            <Button android:id="@+id/from_top"
+                style="@style/CustomButton"
+                android:text="@string/enter_from_top"/>
 
-        <Button android:id="@+id/fade_in"
-            style="@style/CustomButton"
-            android:text="@string/fade_in"/>
-    </LinearLayout>
+            <Button android:id="@+id/from_bottom"
+                style="@style/CustomButton"
+                android:text="@string/enter_from_bottom"/>
 
+            <Button android:id="@+id/fade_in"
+                style="@style/CustomButton"
+                android:text="@string/fade_in"/>
+
+            <Button android:id="@+id/layout_anim"
+                style="@style/CustomButton"
+                android:text="@string/layout_anim"/>
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

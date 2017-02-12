@@ -7,4 +7,5 @@
     <dimen name="button_text_size">16dp</dimen>
     <dimen name="button_margin">10dp</dimen>
     <dimen name="image_title_size">12dp</dimen>
+    <dimen name="list_item_dimen">48dp</dimen>
 </resources>

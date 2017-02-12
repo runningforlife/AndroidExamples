@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AnimationSamples</string>
     <string name="action_settings">Settings</string>
-    
+
     <string name="enter_from_left">Enter from Left</string>
     <string name="enter_from_right">Enter from Right</string>
     <string name="enter_from_top">Enter from Top</string>
@@ -9,5 +9,6 @@
     <string name="fade_in">Fade in</string>
 
     <string name="image_title">Puppy and Kitten</string>
+    <string name="layout_anim">Layout Animation</string>
 
 </resources>

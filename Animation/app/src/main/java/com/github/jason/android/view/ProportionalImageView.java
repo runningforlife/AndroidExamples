@@ -1,4 +1,4 @@
-package com.github.jason.android.animation;
+package com.github.jason.android.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
