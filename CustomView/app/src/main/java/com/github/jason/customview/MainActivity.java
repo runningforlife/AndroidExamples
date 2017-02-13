@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mCtv1 = (CircleTextView)findViewById(R.id.ctv_1);
+        //mCtv1.setTextSize(20);
     }
 
     @Override

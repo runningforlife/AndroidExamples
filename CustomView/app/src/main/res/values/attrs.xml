@@ -6,5 +6,7 @@
         <attr name="text_display" format="color"/>
         <attr name="background_color" format="color"/>
         <attr name="circle_radius" format="dimension"/>
+        <!-- radius/text_size ratio, >= 0 -->
+        <attr name="span_ratio" format="integer"/>
     </declare-styleable>
 </resources>

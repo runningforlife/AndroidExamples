@@ -10,9 +10,9 @@
     <com.github.jason.customview.view.CircleTextView
         android:id="@+id/ctv_1"
         android:layout_margin="@dimen/activity_vertical_margin"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:background_color="@color/colorPrimary"
+        android:padding="@dimen/view_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:text_size="@dimen/circle_medium"/>
     
 </LinearLayout>
