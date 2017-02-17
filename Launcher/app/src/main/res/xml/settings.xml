@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        android:key="@string/pref_edit"
+        android:title="@string/edit_me"
+        android:dialogTitle="@string/edit_me"
+        android:summary="@string/input_something" />
+
+    <ListPreference
+        android:key="@string/pref_list"
+        android:title="@string/list"
+        android:dialogTitle="@string/list"
+        android:summary="@string/list_your_needs"
+        android:entries="@array/pref_colorList"
+        android:entryValues="@array/pref_colorList_values"
+        android:defaultValue="@string/pref_list_default_value"/>
+
+    <com.github.jason.mylauncher.preference.ColorPickerListPreference
+        android:key="@string/pref_theme_color"
+        android:title="@string/pref_theme_color"
+        android:dialogTitle="@string/choose_theme_color"
+        android:summary="@string/color_primary"
+        android:defaultValue="@string/pref_list_default_value"
+        android:entries="@array/pref_colorList"
+        android:entryValues="@array/pref_colorList_values"
+        app:viewType="ListView"/>
+
+</PreferenceScreen>
