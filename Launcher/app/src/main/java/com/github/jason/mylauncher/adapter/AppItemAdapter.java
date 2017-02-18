@@ -1,9 +1,11 @@
 package com.github.jason.mylauncher.adapter;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,9 @@ import android.widget.TextView;
 import com.github.jason.mylauncher.R;
 import com.github.jason.mylauncher.loader.BitmapUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,6 +32,7 @@ public class AppItemAdapter extends BaseAdapter{
 
     private Context mContext;
     private List<AppItem> mAppList = Collections.EMPTY_LIST;
+    private static SparseArray<View> sViewCache;
     private ItemClickListener mListener;
 
     public interface ItemClickListener{
@@ -44,6 +49,7 @@ public class AppItemAdapter extends BaseAdapter{
 
     public void setData(List<AppItem> data){
         mAppList = data;
+        sViewCache = new SparseArray<>(data.size());
     }
 
     @Override
@@ -64,19 +70,23 @@ public class AppItemAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // if use convertView, the binded data list seems to be wrong
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View root = inflater.inflate(R.layout.layout_app_item,parent,false);
+        View root = sViewCache.get(position);
+        if(root == null) {
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+             root = inflater.inflate(R.layout.layout_app_item, parent, false);
 
-        ViewHolder vh = new ViewHolder(root,position);
-        //TODO: icon size may be different for different apps
-        // keep the size the same
-        Drawable d = mAppList.get(position).getAppIcon();
-        Bitmap bitmap = BitmapUtil.drawableToBitmap(d);
-        Bitmap scaleBitmap = Bitmap.createScaledBitmap(bitmap,DEFAULT_WIDTH,DEFAULT_HEIGHT,false);
-        vh.ivIcon.setImageBitmap(scaleBitmap);
-        vh.tvName.setText(mAppList.get(position).getAppName());
+            ViewHolder vh = new ViewHolder(root, position);
+            sViewCache.setValueAt(position,root);
+            //TODO: icon size may be different for different apps
+            // keep the size the same
+            Drawable d = mAppList.get(position).getAppIcon();
+            Bitmap bitmap = BitmapUtil.drawableToBitmap(d);
+            Bitmap scaleBitmap = Bitmap.createScaledBitmap(bitmap, DEFAULT_WIDTH, DEFAULT_HEIGHT, false);
+            vh.ivIcon.setImageBitmap(scaleBitmap);
+            vh.tvName.setText(mAppList.get(position).getAppName());
 
-        Log.v(TAG,"application label = " + vh.tvName.getText());
+            Log.v(TAG, "application label = " + vh.tvName.getText());
+        }
 
         return root;
     }
