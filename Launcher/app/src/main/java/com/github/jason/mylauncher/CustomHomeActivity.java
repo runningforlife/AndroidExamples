@@ -1,7 +1,10 @@
 package com.github.jason.mylauncher;
 
 import android.content.Intent;
+import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Looper;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +23,7 @@ public class CustomHomeActivity extends AppCompatActivity implements LoaderManag
     private static final String TAG = "CustomHomeActivity";
 
     private static final int APP_LOADER = 0x01;
-
+    //FIXME: sometimes the gridview is empty; it seems tha data is lost
     private GridView mGvAppsList;
     private AppItemAdapter mAdapter;
     private List<AppItem> mAppList;
@@ -38,13 +41,27 @@ public class CustomHomeActivity extends AppCompatActivity implements LoaderManag
         mAdapter = new AppItemAdapter(this);
         mGvAppsList.setAdapter(mAdapter);
         mAdapter.setListener(this);
+
+        getSupportLoaderManager().initLoader(APP_LOADER,null,CustomHomeActivity.this);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
 
-        getSupportLoaderManager().initLoader(APP_LOADER,null,CustomHomeActivity.this);
+        Log.v(TAG,"onResume()");
+
+        Loader loader = getSupportLoaderManager().getLoader(APP_LOADER);
+        if(mAppList == null || !loader.isStarted()){
+            loader.startLoading();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config){
+        super.onConfigurationChanged(config);
+
+        Log.v(TAG,"onConfigurationChanged():" + config + "is changed");
     }
 
     @Override

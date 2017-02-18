@@ -1,6 +1,7 @@
 package com.github.jason.mylauncher.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,8 @@ public class AppItemAdapter extends BaseAdapter{
             root = inflater.inflate(R.layout.layout_app_item,parent,false);
 
             ViewHolder vh = new ViewHolder(root,position);
-
+            //TODO: icon size may be different for different apps
+            // keep the size the same
             vh.ivIcon.setImageDrawable(mAppList.get(position).getAppIcon());
             vh.tvName.setText(mAppList.get(position).getAppName());
         }
