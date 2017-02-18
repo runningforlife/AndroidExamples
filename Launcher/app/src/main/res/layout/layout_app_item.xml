@@ -10,11 +10,14 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/app_icon"/>
+        android:contentDescription="@string/app_icon"
+        android:layout_gravity="center"/>
 
     <TextView android:id="@+id/tv_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="5dp"
+        android:maxLines="1"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

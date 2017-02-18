@@ -1,6 +1,8 @@
 package com.github.jason.mylauncher.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.jason.mylauncher.R;
+import com.github.jason.mylauncher.loader.BitmapUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +22,9 @@ import java.util.List;
  */
 public class AppItemAdapter extends BaseAdapter{
     private static final String TAG = "AppItemAdapter";
+
+    private static final int DEFAULT_WIDTH = 150;
+    private static final int DEFAULT_HEIGHT = 150;
 
     private Context mContext;
     private List<AppItem> mAppList = Collections.EMPTY_LIST;
@@ -57,17 +63,20 @@ public class AppItemAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View root = convertView;
-        if(root == null){
-            LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            root = inflater.inflate(R.layout.layout_app_item,parent,false);
+        // if use convertView, the binded data list seems to be wrong
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View root = inflater.inflate(R.layout.layout_app_item,parent,false);
 
-            ViewHolder vh = new ViewHolder(root,position);
-            //TODO: icon size may be different for different apps
-            // keep the size the same
-            vh.ivIcon.setImageDrawable(mAppList.get(position).getAppIcon());
-            vh.tvName.setText(mAppList.get(position).getAppName());
-        }
+        ViewHolder vh = new ViewHolder(root,position);
+        //TODO: icon size may be different for different apps
+        // keep the size the same
+        Drawable d = mAppList.get(position).getAppIcon();
+        Bitmap bitmap = BitmapUtil.drawableToBitmap(d);
+        Bitmap scaleBitmap = Bitmap.createScaledBitmap(bitmap,DEFAULT_WIDTH,DEFAULT_HEIGHT,false);
+        vh.ivIcon.setImageBitmap(scaleBitmap);
+        vh.tvName.setText(mAppList.get(position).getAppName());
+
+        Log.v(TAG,"application label = " + vh.tvName.getText());
 
         return root;
     }

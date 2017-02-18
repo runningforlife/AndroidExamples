@@ -29,10 +29,10 @@ import java.util.List;
  * an app info loader
  */
 public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
-    public static final String TAG = "AppLoader";
+    private static final String TAG = "AppLoader";
 
-    private static final int DISK_CACHE_SIZE = 1024*1024*100;
-    private static final String DISK_CACHE_NAME = "/mylauncher/cache";
+    private static final int DISK_CACHE_SIZE = 1024*1024*50;
+    private static final String DISK_CACHE_NAME = "MyLauncher";
     private static final int DISK_CACHE_INDEX = 0;
 
     private PackageManager mPackageMgr;
@@ -48,6 +48,10 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
         mPackageMgr = context.getPackageManager();
 
         File cachePath = getDiskCachePath(context);
+        if(!cachePath.exists()){
+            cachePath.mkdirs();
+        }
+
         try {
             if(getUsableSpace(cachePath) > DISK_CACHE_SIZE) {
                 mDiskCache = DiskLruCache.open(cachePath, 1, 1, DISK_CACHE_SIZE);
@@ -70,27 +74,29 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
         Log.v(TAG,"loadInBackground(): installed apps size = " + appInfoList.size());
 
         mAppList = new ArrayList<>(appInfoList.size());
-        mAppsName = new HashSet<>(appInfoList.size());
+        mAppsName = new HashSet<>();
         for(ApplicationInfo info: appInfoList){
             String pkgName = info.packageName;
+            String label = mPackageMgr.getApplicationLabel(info).toString();
             // only launchable app is added
-            if(mPackageMgr.getLaunchIntentForPackage(pkgName) != null){
-                if(!mAppsName.contains(pkgName)) {
-                    String key = getCacheKey(pkgName);
-                    Drawable d = loadFromDiskCache(key);
+            if(!mAppsName.contains(label) &&
+                    mPackageMgr.getLaunchIntentForPackage(pkgName) != null){
+                String key = getCacheKey(pkgName);
+                Drawable d = loadFromDiskCache(key);
 
-                    AppItem item;
-                    if(d != null){
-                        item = new AppItem(d,pkgName);
-                    }else {
-                        item = new AppItem(mPackageMgr, info);
-                    }
-
-                    mAppList.add(item);
-                    mAppsName.add(pkgName);
-
+                AppItem item;
+                if(d != null){
+                    item = new AppItem(mPackageMgr,d,label);
+                    saveIconToDiskCache(key,d);
+                }else {
+                    item = new AppItem(mPackageMgr, info);
                     saveIconToDiskCache(key,item.getAppIcon());
                 }
+
+                mAppList.add(item);
+                mAppsName.add(label);
+
+                Log.v(TAG,"application label : label " + label);
             }
         }
 
@@ -120,7 +126,6 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
             onReleaseResources(oldApps);
         }
     }
-
 
     @Override
     protected void onStartLoading(){
@@ -155,6 +160,7 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
         if(mAppList != null){
             onReleaseResources(mAppList);
             mAppList = null;
+            mAppsName = null;
         }
 
     }
@@ -213,9 +219,11 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
 
         try {
             DiskLruCache.Snapshot snapshot = mDiskCache.get(key);
-            FileInputStream fis = (FileInputStream)snapshot.getInputStream(DISK_CACHE_INDEX);
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
-            return new BitmapDrawable(getContext().getResources(),bitmap);
+            if(snapshot != null) {
+                FileInputStream fis = (FileInputStream) snapshot.getInputStream(DISK_CACHE_INDEX);
+                Bitmap bitmap = BitmapFactory.decodeStream(fis);
+                return new BitmapDrawable(getContext().getResources(),bitmap);
+            }
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -238,7 +246,9 @@ public class AppLoader extends AsyncTaskLoader<List<AppItem>> {
     }
 
     private long getUsableSpace(File path){
-        return path.getUsableSpace();
+        long size = path.getUsableSpace();
+        Log.v(TAG,"getUsableSpace(): size = " + size);
+        return size;
     }
 
     private String bytesToHexString(byte[] bytes) {

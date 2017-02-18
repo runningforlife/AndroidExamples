@@ -24,7 +24,8 @@ public class AppItem {
         loadName();
     }
 
-    public AppItem(Drawable icon, String name){
+    public AppItem(PackageManager pm,Drawable icon, String name){
+        mPm = pm;
         mIcon = icon;
         mAppName = name;
         loadName();
@@ -35,16 +36,20 @@ public class AppItem {
     }
 
     public Drawable getAppIcon(){
-        if(mIcon == null){
-            if(mApkFile.exists()){
-                mIcon = mAppInfo.loadIcon(mPm);
-                return mIcon;
-            }else{
-                mMounted = false;
-            }
-        }else if(!mMounted){
+        if(mIcon != null){
+            return mIcon;
+        }
+
+        if(mApkFile != null && mApkFile.exists()){
+            mIcon = mAppInfo.loadIcon(mPm);
+            return mIcon;
+        }else{
+            mMounted = false;
+        }
+
+        if(!mMounted){
             // now app is mounted
-            if(mApkFile.exists()){
+            if(mApkFile != null && mApkFile.exists()){
                 mIcon = mAppInfo.loadIcon(mPm);
                 mMounted = true;
                 return mIcon;
@@ -63,10 +68,10 @@ public class AppItem {
 
     private void loadName(){
         if(mAppName == null || !mMounted){
-            if(!mApkFile.exists()){
+            if(mApkFile != null && !mApkFile.exists()){
                 mMounted = false;
                 mAppName = mAppInfo.packageName;
-            }else{
+            }else if(mAppInfo != null){
                 mMounted = true;
                 CharSequence label = mAppInfo.loadLabel(mPm);
                 mAppName = label != null ? label.toString() : mAppInfo.packageName;
