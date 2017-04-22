@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ImageLoader</string>
+    <string name="loader_picasso">Picasso</string>
+    <string name="loader_volley">Volley</string>
+    <string name="loader_glide">Glide</string>
+    <string name="action_dump_stats">DumpStats</string>
+</resources>
