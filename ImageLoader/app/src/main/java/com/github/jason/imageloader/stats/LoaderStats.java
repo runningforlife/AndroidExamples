@@ -24,9 +24,10 @@ import java.util.List;
 
 public class LoaderStats {
 
+    private static final String TAG = "LoaderStats";
     private static final String FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() +
-            File.pathSeparator + "ImageLoader" + File.pathSeparator + "stats.txt";
-
+            File.separator + "ImageLoader";
+    private static final String FILE_NAME = "stats.txt";
     // for picasso
     private List<StatsItem> picasso = new ArrayList<>();
     // for Volley
@@ -34,6 +35,12 @@ public class LoaderStats {
     // for Glide
     private List<StatsItem> glide = new ArrayList<>();
 
+    public LoaderStats(){
+        File file = new File(FILE_PATH,FILE_NAME);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     public void addStat(Loader loader,StatsItem item){
         if(item != null) {
@@ -61,13 +68,12 @@ public class LoaderStats {
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
 
-        File file = new File(FILE_PATH);
-        if(!file.exists()){
-            file.mkdirs();
-        }
+        File file = new File(FILE_PATH,FILE_NAME);
+        //file.createNewFile();
 
         try {
-            fos = new FileOutputStream(file);
+            // append to the end of the file
+            fos = new FileOutputStream(file,false);
             bos = new BufferedOutputStream(fos);
 
             if(picasso.size() > 0){
@@ -88,6 +94,7 @@ public class LoaderStats {
         }finally {
             if(bos != null) {
                 try {
+                    bos.flush();
                     bos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -96,6 +103,7 @@ public class LoaderStats {
 
             if(fos != null){
                 try {
+                    fos.flush();
                     fos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -120,9 +128,12 @@ public class LoaderStats {
 
         writer.println("--------------------------------------");
         writer.println();
+
+        writer.flush();
     }
 
     private long getAverageTime(List<StatsItem> stats){
+        Log.v(TAG,"getAverageTime(): stats size = " + stats.size());
 
         long total = 0;
         for(StatsItem item : stats){

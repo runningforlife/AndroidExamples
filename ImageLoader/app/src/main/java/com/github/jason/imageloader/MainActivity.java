@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 mRcvImageList.invalidate();
                 mRcvImageList.removeAllViews();
+                System.gc();
+                adapter.setLoader(ImageAdapter.Loader.PICASSO);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -51,7 +53,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 mRcvImageList.invalidate();
                 mRcvImageList.removeAllViews();
+                System.gc();
                 adapter.setLoader(ImageAdapter.Loader.GLIDE);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        mBtnVolley.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRcvImageList.invalidate();
+                mRcvImageList.removeAllViews();
+                System.gc();
+                adapter.setLoader(ImageAdapter.Loader.VOLLEY);
                 adapter.notifyDataSetChanged();
             }
         });

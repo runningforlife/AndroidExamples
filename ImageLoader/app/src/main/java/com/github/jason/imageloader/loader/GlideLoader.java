@@ -34,4 +34,15 @@ public class GlideLoader {
                 .crossFade()
                 .into(view);
     }
+
+    public static void load(Context context, String url, @DrawableRes int ph,
+                            RequestListener<String,GlideDrawable> listener){
+        Glide.with(context)
+                .load(url)
+                .listener(listener)
+                .placeholder(ph)
+                .centerCrop()
+                .crossFade()
+                .into(512,(int)(512*DisplayUtil.getScreenRatio(context)));
+    }
 }

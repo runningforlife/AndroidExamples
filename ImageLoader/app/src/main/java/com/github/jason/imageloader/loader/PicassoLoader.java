@@ -5,6 +5,9 @@ import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Cache;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -46,6 +49,8 @@ public class PicassoLoader {
                 .load(url)
                 .placeholder(placeholder)
                 .centerCrop()
+                .memoryPolicy(MemoryPolicy.NO_CACHE)  // from disk
+                .networkPolicy(NetworkPolicy.NO_CACHE) // from network
                 .resize(512,(int)(512*DisplayUtil.getScreenRatio(context)))
                 .into(target);
     }

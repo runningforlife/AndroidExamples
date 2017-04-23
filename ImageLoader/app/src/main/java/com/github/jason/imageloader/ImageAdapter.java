@@ -1,12 +1,18 @@
 package com.github.jason.imageloader;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.github.jason.imageloader.ImageAdapter.ImageViewHolder;
 import com.github.jason.imageloader.loader.GlideLoader;
 import com.github.jason.imageloader.loader.PicassoLoader;
+import com.github.jason.imageloader.loader.VolleyLoader;
 import com.github.jason.imageloader.stats.LoaderStats;
 import com.github.jason.imageloader.stats.StatsItem;
+import com.squareup.picasso.Cache;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -21,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +35,9 @@ import java.util.List;
 import jason.github.com.imageloader.R;
 
 import static com.github.jason.imageloader.ImageAdapter.Loader.GLIDE;
+import static com.github.jason.imageloader.ImageAdapter.Loader.NONE;
 import static com.github.jason.imageloader.ImageAdapter.Loader.PICASSO;
+import static com.github.jason.imageloader.ImageAdapter.Loader.VOLLEY;
 
 /**
  * Created by jason on 4/20/17.
@@ -38,6 +47,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     private static final String TAG = "ImageAdapter";
 
     public enum Loader {
+        NONE(""),
         PICASSO("picasso"),
         VOLLEY("volley"),
         GLIDE("glide");
@@ -75,7 +85,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
     private static List<String> imgList = new ArrayList<>(Arrays.asList(IMAGE_SOURCE));
 
     private Context mContext;
-    private Loader mLoader = PICASSO;
+    private Loader mLoader = NONE;
     private LoaderStats mStats;
 
     public ImageAdapter(Context context){
@@ -98,16 +108,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
         Log.v(TAG,"onBindViewHolder(): position = " + position);
         switch (mLoader){
             case VOLLEY:
+                VolleyLoader volley = new VolleyLoader(mContext);
+                volley.load(imgList.get(position), ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888,
+                        new VolleyLoaderListener(holder.image,new StatsItem()),new VolleyErrorListener());
                 break;
             case GLIDE:
-                GlideLoader.load(mContext,imgList.get(position),holder.image,R.drawable.ic_flower_48dp,
+                GlideLoader.load(mContext,imgList.get(position),R.drawable.ic_flower_48dp,
                         new GlideLoaderListener(holder.image,new StatsItem()));
                 break;
-            default:
+            case PICASSO:
 /*                PicassoLoader.load(mContext,imgList.get(position),
                         holder.image,R.drawable.ic_flower_48dp,new ImageLoaderListener());*/
                 PicassoLoader.load(mContext,imgList.get(position),new ImageTarget(holder.image, new StatsItem()),
                         R.drawable.ic_flower_48dp);
+                break;
+            default:
+                // nothing
                 break;
         }
     }
@@ -159,7 +175,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             Log.v(TAG,"onBitmapLoaded(): bitmap size " + bitmap.getByteCount() + ",loaded from " + from);
             image.setImageBitmap(bitmap);
-            mStats.addStat(PICASSO,item);
+            item.setEndTime(System.currentTimeMillis());
+            mStats.addStat(PICASSO, item);
         }
 
         @Override
@@ -201,13 +218,42 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder>{
 
         @Override
         public boolean onResourceReady(GlideDrawable resource, String model, com.bumptech.glide.request.target.Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            Log.v(TAG,"onResourceReady()");
-            item.setStartTime(System.currentTimeMillis());
-            mStats.addStat(GLIDE,item);
-            //image.setImageDrawable(resource);
+            Log.v(TAG,"onResourceReady(): from memory cache = " + isFromMemoryCache);
+            image.setImageDrawable(resource);
+            if(!isFromMemoryCache) {
+                item.setEndTime(System.currentTimeMillis());
+                mStats.addStat(GLIDE, item);
+            }
             return false;
         }
     }
 
+    // callback for volley image loading
+    public class VolleyLoaderListener implements Response.Listener<Bitmap>{
+
+        private ImageView image;
+        private StatsItem item;
+
+        public VolleyLoaderListener(ImageView view,StatsItem item){
+            this.image = view;
+            this.item = item;
+        }
+
+        @Override
+        public void onResponse(Bitmap response) {
+            Log.v(TAG,"onResponse(): bitmap size = " + response.getByteCount());
+            image.setImageBitmap(response);
+            item.setEndTime(System.currentTimeMillis());
+            mStats.addStat(VOLLEY,item);
+        }
+    }
+
+    public class VolleyErrorListener implements Response.ErrorListener{
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.v(TAG,"onErrorResponse(): error = " + error);
+        }
+    }
 
 }

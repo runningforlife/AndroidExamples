@@ -27,7 +27,7 @@ public class StatsItem {
         return mStart;
     }
 
-    private void setEndTime(long end){
+    public void setEndTime(long end){
         mEnd = end;
     }
 
