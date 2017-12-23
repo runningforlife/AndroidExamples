@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">JobScheduler</string>
+    <string name="data_sync_complete">Data Sync Complete</string>
+    <string name="ok">Ok</string>
+    <string name="start_job_scheduler">Start Job Scheduler</string>
+    <string name="stop_job_scheduler">Stop Job Scheduler</string>
+</resources>
